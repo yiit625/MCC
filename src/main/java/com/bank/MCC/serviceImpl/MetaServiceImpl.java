@@ -3,10 +3,12 @@ package com.bank.MCC.serviceImpl;
 import com.bank.MCC.dto.MetaModel;
 import com.bank.MCC.entities.MetaEntity;
 import com.bank.MCC.entities.MetaOldEntity;
-import com.bank.MCC.repositories.MetaOldRepository;
 import com.bank.MCC.repositories.MetaRepository;
 import com.bank.MCC.services.MetaService;
+import com.bank.MCC.specs.MetaSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -18,8 +20,8 @@ public class MetaServiceImpl implements MetaService {
     @Autowired
     MetaRepository metaRepository;
 
-    @Autowired
-    MetaOldRepository metaOldRepository;
+    /*@Autowired
+    MetaOldRepository metaOldRepository;*/
 
     @Override
     public MetaEntity create(MetaModel model) {
@@ -41,7 +43,7 @@ public class MetaServiceImpl implements MetaService {
         metaOldEntity.setCreatedDate(metaEntity.getCreatedDate());
         metaOldEntity.setUpdateDate(new Date());
         metaOldEntity.setMetaId(metaEntity);
-        //metaOldRepository.save(metaOldEntity);
+        //metaRepository.save(metaOldEntity);
 
         MetaEntity metaEntity1 = new MetaEntity();
         metaEntity1.setId(model.getId());
@@ -65,5 +67,13 @@ public class MetaServiceImpl implements MetaService {
     @Override
     public void delete(Integer metaId) {
         metaRepository.deleteById(metaId);
+    }
+
+    @Override
+    public Page<MetaEntity> pagingMetas(String nameOfApplication, String ownerOfApplication,
+                                        String configManagerOfApplication, Pageable page) {
+        MetaSpecs<MetaEntity> spec = new MetaSpecs<>();
+        return metaRepository.findAll(spec.filter(nameOfApplication, ownerOfApplication,
+                configManagerOfApplication), page);
     }
 }

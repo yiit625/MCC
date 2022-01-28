@@ -13,9 +13,4 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @RequestMapping("/data")
 public class DataAccessController {
-
-    @Autowired
-    MetaService metaService;
-    @Autowired
-    TechnicalService technicalService;
 }
