@@ -65,7 +65,7 @@ public class ResponsePayload {
         super();
         this.data = data;
     }
-    
+
     public ResponsePayload(ResponseEnum responseEnum, String message, Boolean success, Object data) {
         this(responseEnum);
         this.message = message;
