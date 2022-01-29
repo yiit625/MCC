@@ -5,7 +5,6 @@ import com.bank.MCC.entities.MetaEntity;
 import com.bank.MCC.entities.MetaOldEntity;
 import com.bank.MCC.repositories.MetaRepository;
 import com.bank.MCC.services.MetaService;
-import com.bank.MCC.services.TechnicalService;
 import com.bank.MCC.specs.MetaSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,9 +19,6 @@ public class MetaServiceImpl implements MetaService {
 
     @Autowired
     MetaRepository metaRepository;
-
-    /*@Autowired
-    MetaOldRepository metaOldRepository;*/
 
     @Override
     public MetaEntity create(MetaModel model) {
@@ -44,7 +40,7 @@ public class MetaServiceImpl implements MetaService {
         metaOldEntity.setCreatedDate(metaEntity.getCreatedDate());
         metaOldEntity.setUpdateDate(new Date());
         metaOldEntity.setMetaId(metaEntity);
-        //metaRepository.save(metaOldEntity);
+        //metaOldRepository.save(metaOldEntity);
 
         MetaEntity metaEntity1 = new MetaEntity();
         metaEntity1.setId(model.getId());

@@ -17,5 +17,5 @@ public class MetaModel {
 
     String configManagerOfApplication;
 
-    int version;
+    Integer version;
 }
