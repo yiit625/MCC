@@ -46,7 +46,7 @@ public class MetaServiceImpl implements MetaService {
         metaOldEntity.setUpdateDate(new Date());
         metaOldEntity.setMetaId(metaEntity);
         metaOldRepository.save(metaOldEntity);
-        
+
         metaEntity.setVersion(metaEntity.getVersion() + 1);
         metaEntity.setNameOfApplication(model.getNameOfApplication());
         metaEntity.setConfigManagerOfApplication(model.getConfigManagerOfApplication());
