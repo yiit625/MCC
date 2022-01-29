@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @SpringBootApplication(scanBasePackages={"com.bank.MCC.entities"})
 @EnableJpaRepositories(basePackages = {"com.bank.MCC.repositories"})
-@EntityScan("com.bank.*")
+@EntityScan("com.bank.MCC.entities")
 public class MccApplication {
 
 	public static void main(String[] args) {
