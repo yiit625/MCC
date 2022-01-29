@@ -13,5 +13,5 @@ public interface TechnicalService {
 
     void delete(Integer technicalId);
 
-    Page<TechnicalEntity> pagingMetas(String nameOfApplication , String ownerOfApplication, String configManagerOfApplication , Pageable page);
+    Page<TechnicalEntity> pagingMetas(String role , String permission, Pageable page);
 }
