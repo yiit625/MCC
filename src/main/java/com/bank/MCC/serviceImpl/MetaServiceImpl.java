@@ -3,8 +3,10 @@ package com.bank.MCC.serviceImpl;
 import com.bank.MCC.dto.MetaModel;
 import com.bank.MCC.entities.MetaEntity;
 import com.bank.MCC.entities.MetaOldEntity;
+import com.bank.MCC.repositories.MetaOldRepository;
 import com.bank.MCC.repositories.MetaRepository;
 import com.bank.MCC.services.MetaService;
+import com.bank.MCC.specs.MetaOldSpecs;
 import com.bank.MCC.specs.MetaSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,9 @@ public class MetaServiceImpl implements MetaService {
 
     @Autowired
     MetaRepository metaRepository;
+
+    @Autowired
+    MetaOldRepository metaOldRepository;
 
     @Override
     public MetaEntity create(MetaModel model) {
@@ -40,15 +45,15 @@ public class MetaServiceImpl implements MetaService {
         metaOldEntity.setCreatedDate(metaEntity.getCreatedDate());
         metaOldEntity.setUpdateDate(new Date());
         metaOldEntity.setMetaId(metaEntity);
-        //metaOldRepository.save(metaOldEntity);
+        metaOldRepository.save(metaOldEntity);
+        
+        metaEntity.setVersion(metaEntity.getVersion() + 1);
+        metaEntity.setNameOfApplication(model.getNameOfApplication());
+        metaEntity.setConfigManagerOfApplication(model.getConfigManagerOfApplication());
+        metaEntity.setOwnerOfApplication(model.getOwnerOfApplication());
+        metaEntity.setUpdateDate(new Date());
 
-        MetaEntity metaEntity1 = new MetaEntity();
-        metaEntity1.setId(model.getId());
-        metaEntity1.setCreatedDate(metaEntity.getCreatedDate());
-        metaEntity1.setVersion(metaEntity.getVersion() + 1);
-
-        delete(metaEntity.getId());
-        return metaRepository.save(mapMeta(metaEntity1, model));
+        return metaRepository.save(metaEntity);
     }
 
     private MetaEntity mapMeta(MetaEntity metaEntity, MetaModel model) {
@@ -71,6 +76,14 @@ public class MetaServiceImpl implements MetaService {
                                         String configManagerOfApplication, Pageable page) {
         MetaSpecs<MetaEntity> spec = new MetaSpecs<>();
         return metaRepository.findAll(spec.filter(nameOfApplication, ownerOfApplication,
+                configManagerOfApplication), page);
+    }
+
+    @Override
+    public Page<MetaOldEntity> pagingOldMetas(Integer id, String nameOfApplication, String ownerOfApplication,
+                                              String configManagerOfApplication, Pageable page) {
+        MetaOldSpecs<MetaOldEntity> spec = new MetaOldSpecs<>();
+        return metaOldRepository.findAll(spec.filter(id, nameOfApplication, ownerOfApplication,
                 configManagerOfApplication), page);
     }
 }
