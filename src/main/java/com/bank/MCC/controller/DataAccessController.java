@@ -148,7 +148,7 @@ public class DataAccessController {
         }
     }
 
-    @GetMapping(value = "/bath-all-metas-paging",
+    @GetMapping(value = "/bath-all-technical-paging",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponsePayload pageMetas(@RequestParam String role ,
@@ -168,7 +168,7 @@ public class DataAccessController {
         }
     }
 
-    @GetMapping(value = "/bath-all-old-metas-paging",
+    @GetMapping(value = "/bath-all-old-technical-paging",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponsePayload pageOldMetas(  @RequestParam Integer id,

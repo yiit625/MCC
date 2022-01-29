@@ -6,11 +6,10 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-
 @EnableScheduling
-@SpringBootApplication(scanBasePackages={"com.bank.MCC.entities"})
+@SpringBootApplication
 @EnableJpaRepositories(basePackages = {"com.bank.MCC.repositories"})
-@EntityScan("com.bank.MCC.entities")
+@EntityScan(basePackages = {"com.bank.MCC.entities"})
 public class MccApplication {
 
 	public static void main(String[] args) {
