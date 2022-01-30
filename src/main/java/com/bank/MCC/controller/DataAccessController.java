@@ -3,12 +3,14 @@ package com.bank.MCC.controller;
 import com.bank.MCC.config.ResponseEnum;
 import com.bank.MCC.config.ResponsePayload;
 import com.bank.MCC.config.ValidationMessage;
+import com.bank.MCC.dto.ApplicationModel;
 import com.bank.MCC.dto.MetaModel;
 import com.bank.MCC.dto.TechnicalModel;
 import com.bank.MCC.entities.MetaEntity;
 import com.bank.MCC.entities.MetaOldEntity;
 import com.bank.MCC.entities.TechnicalEntity;
 import com.bank.MCC.entities.TechnicalOldEntity;
+import com.bank.MCC.services.ApplicationService;
 import com.bank.MCC.services.MetaService;
 import com.bank.MCC.services.TechnicalService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ public class DataAccessController {
 
     @Autowired
     TechnicalService technicalService;
+
+    @Autowired
+    ApplicationService applicationService;
 
     @PostMapping(value = "/meta",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -79,7 +84,7 @@ public class DataAccessController {
     public ResponsePayload pageMetas(@RequestParam String nameOfApplication ,
                                           @RequestParam String ownerOfApplication,
                                           @RequestParam String configManagerOfApplication ,
-                                          @RequestParam Pageable page) {
+                                          Pageable page) {
 
         try {
             Page<MetaEntity> models = metaService.pagingMetas(nameOfApplication, ownerOfApplication, configManagerOfApplication, page);
@@ -101,7 +106,7 @@ public class DataAccessController {
                                           @RequestParam String nameOfApplication ,
                                           @RequestParam String ownerOfApplication,
                                           @RequestParam String configManagerOfApplication ,
-                                          @RequestParam Pageable page) {
+                                          Pageable page) {
 
         try {
             Page<MetaOldEntity> models = metaService.pagingOldMetas(id, nameOfApplication, ownerOfApplication,
@@ -166,7 +171,7 @@ public class DataAccessController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponsePayload pageMetas(@RequestParam String role ,
                                      @RequestParam String permission,
-                                     @RequestParam Pageable page) {
+                                     Pageable page) {
 
         try {
             Page<TechnicalEntity> models = technicalService.pagingMetas(role, permission, page);
@@ -187,7 +192,7 @@ public class DataAccessController {
     public ResponsePayload pageOldMetas(  @RequestParam Integer id,
                                           @RequestParam String role ,
                                           @RequestParam String permission,
-                                          @RequestParam Pageable page) {
+                                          Pageable page) {
 
         try {
             Page<TechnicalOldEntity> models = technicalService.pagingOldMetas(id, role, permission, page);
@@ -205,21 +210,25 @@ public class DataAccessController {
     @PostMapping(value = "/meta-technical",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponsePayload createBothOfThem(@RequestBody MetaModel metaModel,
-                                            @RequestBody TechnicalModel technicalModel) {
+    public ResponsePayload createBothOfThem(@RequestBody ApplicationModel model) {
 
         try {
-            MetaEntity insertedEntity = metaService.create(metaModel);
-            TechnicalEntity insertedEntity2 = technicalService.update(technicalModel);
-            if (insertedEntity != null && insertedEntity2 != null) {
-                return new ResponsePayload(ResponseEnum.OK, insertedEntity, "Create " +
-                        insertedEntity.getNameOfApplication() + " is success with Technical Data");
+            ValidationMessage message = metaService.checkExist(model.getNameOfApplication());
+            if (!message.isValid()) {
+                return new ResponsePayload(ResponseEnum.BADREQUEST, message.getMessage());
             }
-            return new ResponsePayload(ResponseEnum.NOTFOUND, "Create is unsuccessfully");
+            ValidationMessage message2 = technicalService.checkExist(model.getRoles());
+            if (!message2.isValid()) {
+                return new ResponsePayload(ResponseEnum.BADREQUEST, message2.getMessage());
+            }
+            applicationService.create(model);
+
+            return new ResponsePayload(ResponseEnum.OK, "Create is success with Technical Data");
+
         } catch (DataIntegrityViolationException ex) {
             return new ResponsePayload(ResponseEnum.NOTFOUND, "Duplicate Key");
         } catch (Exception ex) {
-            return new ResponsePayload(ResponseEnum.INTERNAL_ERROR);
+                return new ResponsePayload(ResponseEnum.INTERNAL_ERROR);
         }
     }
 }

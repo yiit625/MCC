@@ -77,8 +77,9 @@ public class MetaServiceImpl implements MetaService {
     public Page<MetaEntity> pagingMetas(String nameOfApplication, String ownerOfApplication,
                                         String configManagerOfApplication, Pageable page) {
         MetaSpecs<MetaEntity> spec = new MetaSpecs<>();
-        return metaRepository.findAll(spec.filter(nameOfApplication, ownerOfApplication,
+        Page<MetaEntity> result = metaRepository.findAll(spec.filter(nameOfApplication, ownerOfApplication,
                 configManagerOfApplication), page);
+        return result;
     }
 
     @Override

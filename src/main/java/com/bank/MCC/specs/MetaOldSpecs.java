@@ -2,6 +2,7 @@ package com.bank.MCC.specs;
 
 import com.bank.MCC.entities.MetaOldEntity;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -14,17 +15,17 @@ public class MetaOldSpecs <T extends MetaOldEntity> {
                                             String configManagerOfApplication) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
-            if (nameOfApplication != null) {
+            if (!ObjectUtils.isEmpty(nameOfApplication)) {
                 predicates.add(cb.like(root.get("nameOfApplication"), "%" + nameOfApplication + "%"));
             }
-            if (ownerOfApplication != null) {
+            if (!ObjectUtils.isEmpty(ownerOfApplication)) {
                 predicates.add(cb.like(root.get("ownerOfApplication"), "%" + ownerOfApplication + "%"));
             }
-            if (configManagerOfApplication != null) {
+            if (!ObjectUtils.isEmpty(configManagerOfApplication)) {
                 predicates.add(cb.equal(root.get("configManagerOfApplication"), configManagerOfApplication));
             }
-            if (id != null) {
-                predicates.add(cb.equal(root.get("id"), id));
+            if(id != null){
+                predicates.add(cb.equal(root.join("metaId").get("id"), id));
             }
             return cb.and(predicates.toArray(new Predicate[0]));
         };
