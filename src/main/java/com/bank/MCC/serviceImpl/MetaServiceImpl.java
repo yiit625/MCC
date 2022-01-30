@@ -1,5 +1,6 @@
 package com.bank.MCC.serviceImpl;
 
+import com.bank.MCC.config.ValidationMessage;
 import com.bank.MCC.dto.MetaModel;
 import com.bank.MCC.entities.MetaEntity;
 import com.bank.MCC.entities.MetaOldEntity;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Date;
@@ -85,5 +87,16 @@ public class MetaServiceImpl implements MetaService {
         MetaOldSpecs<MetaOldEntity> spec = new MetaOldSpecs<>();
         return metaOldRepository.findAll(spec.filter(id, nameOfApplication, ownerOfApplication,
                 configManagerOfApplication), page);
+    }
+
+    @Override
+    public ValidationMessage checkExist(String nameOfApplication) {
+        ValidationMessage message = new ValidationMessage("", "", true);
+        MetaEntity metaEntity = metaRepository.checkExist(nameOfApplication);
+        if (!ObjectUtils.isEmpty(metaEntity)) {
+            message.setMessage("There is also application with same name in MCC Repository.");
+            message.setValid(false);
+        }
+        return message;
     }
 }

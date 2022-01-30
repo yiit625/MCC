@@ -1,20 +1,19 @@
 package com.bank.MCC.serviceImpl;
 
+import com.bank.MCC.config.ValidationMessage;
 import com.bank.MCC.dto.TechnicalModel;
-import com.bank.MCC.entities.MetaEntity;
-import com.bank.MCC.entities.MetaOldEntity;
 import com.bank.MCC.entities.TechnicalEntity;
 import com.bank.MCC.entities.TechnicalOldEntity;
 import com.bank.MCC.repositories.TechnicalOldRepository;
 import com.bank.MCC.repositories.TechnicalRepository;
 import com.bank.MCC.services.TechnicalService;
-import com.bank.MCC.specs.MetaSpecs;
 import com.bank.MCC.specs.TechnicalOldSpecs;
 import com.bank.MCC.specs.TechnicalSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Date;
@@ -73,5 +72,16 @@ public class TechnicalServiceImpl implements TechnicalService {
     public Page<TechnicalOldEntity> pagingOldMetas(Integer id, String role, String permission, Pageable page) {
         TechnicalOldSpecs<TechnicalOldEntity> spec = new TechnicalOldSpecs<>();
         return technicalOldRepository.findAll(spec.filter(id, role, permission), page);
+    }
+
+    @Override
+    public ValidationMessage checkExist(String role) {
+        ValidationMessage message = new ValidationMessage("", "", true);
+        TechnicalEntity technicalEntity = technicalRepository.checkExist(role);
+        if (!ObjectUtils.isEmpty(technicalEntity)) {
+            message.setMessage("There is also application with same role in MCC Repository.");
+            message.setValid(false);
+        }
+        return message;
     }
 }

@@ -1,5 +1,6 @@
 package com.bank.MCC.services;
 
+import com.bank.MCC.config.ValidationMessage;
 import com.bank.MCC.dto.TechnicalModel;
 import com.bank.MCC.entities.TechnicalEntity;
 import com.bank.MCC.entities.TechnicalOldEntity;
@@ -17,4 +18,6 @@ public interface TechnicalService {
     Page<TechnicalEntity> pagingMetas(String role , String permission, Pageable page);
 
     Page<TechnicalOldEntity> pagingOldMetas(Integer id, String role , String permission, Pageable page);
+
+    ValidationMessage checkExist(String role);
 }

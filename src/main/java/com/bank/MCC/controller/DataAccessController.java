@@ -2,6 +2,7 @@ package com.bank.MCC.controller;
 
 import com.bank.MCC.config.ResponseEnum;
 import com.bank.MCC.config.ResponsePayload;
+import com.bank.MCC.config.ValidationMessage;
 import com.bank.MCC.dto.MetaModel;
 import com.bank.MCC.dto.TechnicalModel;
 import com.bank.MCC.entities.MetaEntity;
@@ -34,6 +35,12 @@ public class DataAccessController {
     public ResponsePayload create(@RequestBody MetaModel metaModel) {
 
         try {
+            
+            ValidationMessage message = metaService.checkExist(metaModel.getNameOfApplication());
+            if (!message.isValid()) {
+                return new ResponsePayload(ResponseEnum.BADREQUEST, message.getMessage());
+            }
+
             MetaEntity insertedEntity = metaService.create(metaModel);
             if (insertedEntity != null) {
                 return new ResponsePayload(ResponseEnum.OK, insertedEntity, "Create " +
@@ -116,6 +123,12 @@ public class DataAccessController {
     public ResponsePayload createTech(@RequestBody TechnicalModel technicalModel) {
 
         try {
+
+            ValidationMessage message = technicalService.checkExist(technicalModel.getRoles());
+            if (!message.isValid()) {
+                return new ResponsePayload(ResponseEnum.BADREQUEST, message.getMessage());
+            }
+
             TechnicalEntity insertedEntity = technicalService.create(technicalModel);
             if (insertedEntity != null) {
                 return new ResponsePayload(ResponseEnum.OK, insertedEntity, "Create " +
@@ -182,6 +195,27 @@ public class DataAccessController {
                 return new ResponsePayload(ResponseEnum.OK, models, "List data is success");
             else
                 return new ResponsePayload(ResponseEnum.NOTFOUND, "List is unsuccessfully");
+        } catch (DataIntegrityViolationException ex) {
+            return new ResponsePayload(ResponseEnum.NOTFOUND, "Duplicate Key");
+        } catch (Exception ex) {
+            return new ResponsePayload(ResponseEnum.INTERNAL_ERROR);
+        }
+    }
+
+    @PostMapping(value = "/meta-technical",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponsePayload createBothOfThem(@RequestBody MetaModel metaModel,
+                                            @RequestBody TechnicalModel technicalModel) {
+
+        try {
+            MetaEntity insertedEntity = metaService.create(metaModel);
+            TechnicalEntity insertedEntity2 = technicalService.update(technicalModel);
+            if (insertedEntity != null && insertedEntity2 != null) {
+                return new ResponsePayload(ResponseEnum.OK, insertedEntity, "Create " +
+                        insertedEntity.getNameOfApplication() + " is success with Technical Data");
+            }
+            return new ResponsePayload(ResponseEnum.NOTFOUND, "Create is unsuccessfully");
         } catch (DataIntegrityViolationException ex) {
             return new ResponsePayload(ResponseEnum.NOTFOUND, "Duplicate Key");
         } catch (Exception ex) {
