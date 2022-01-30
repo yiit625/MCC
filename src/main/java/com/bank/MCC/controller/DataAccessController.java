@@ -35,7 +35,7 @@ public class DataAccessController {
     public ResponsePayload create(@RequestBody MetaModel metaModel) {
 
         try {
-            
+
             ValidationMessage message = metaService.checkExist(metaModel.getNameOfApplication());
             if (!message.isValid()) {
                 return new ResponsePayload(ResponseEnum.BADREQUEST, message.getMessage());

@@ -28,10 +28,10 @@ public class TechnicalOldEntity {
     @Column(name = "version")
     int version;
 
-    @Column(name = "createdDate")
+    @Column(name = "created_date")
     private Date createdDate;
 
-    @Column(name = "updateDate")
+    @Column(name = "update_date")
     private Date updateDate;
 
     @ManyToOne
